@@ -1,5 +1,5 @@
 import numpy as np
-def getLogLikelihood(means, weights, covariances, X):
+def getLikelihood(means, weights, covariances, X):
     # Log Likelihood estimation
     #
     # INPUT:
@@ -15,16 +15,14 @@ def getLogLikelihood(means, weights, covariances, X):
     # logLikelihood  : log-likelihood
     #####Insert your code here for subtask 6a#####
 
-    num_datapoints = X.shape[0]
-    num_dims = X.shape[1]
+    num_dims = X.shape[0]
     num_gauss = len(weights)
-    logLikelihood = 0
-    for n in range(num_datapoints):
-        sum_weighted_nk = 0
-        for k in range(num_gauss):
-            cov_matrix_k = covariances[:, :, k]
-            sum_weighted_nk += weights[k]*1 / ((2 * np.pi) ** (num_dims / 2) * (np.linalg.det(cov_matrix_k)) ** 0.5) * np.exp(
-                -0.5 * (X[n, :] - means[k]).dot(np.linalg.inv(cov_matrix_k)).dot(X[n, :] - means[k]))
-        log_sum_weighted_nk = np.log(sum_weighted_nk)
-        logLikelihood += log_sum_weighted_nk
-    return logLikelihood
+    likelihood = 0
+    sum_weighted = 0
+    for k in range(num_gauss):
+        cov_matrix_k = covariances[:, :, k]
+        sum_weighted += weights[k]*1 / ((2 * np.pi) ** (num_dims / 2) * (np.linalg.det(cov_matrix_k)) ** 0.5) * np.exp(
+            -0.5 * (X - means[k]).dot(np.linalg.inv(cov_matrix_k)).dot(X - means[k]))
+    likelihood = sum_weighted
+
+    return likelihood
